@@ -19,9 +19,10 @@ exports.getBlocks = async (req, res) => {
             i = 0;
             blocks.forEach(block => {
                 resBlocks[i] = {
+                    id: block.id,
                     height: block.height,
                     time: currentTime - block.timestamp,
-                    size: block.nBits,
+                    bits: block.nBits,
                     txs: blockTXs[i++].length,
                     miner: block.votes
                 }
@@ -30,4 +31,23 @@ exports.getBlocks = async (req, res) => {
             res.send(resBlocks);
         }
     });
+}
+
+exports.getBlock = async (req, res) => {
+    const blockInfo = await blockModel.getBlockInfo(
+        req.params.headerId
+    );
+
+    let resBlockInfo = {
+        id: blockInfo.header.id,
+        height: blockInfo.header.height,
+        time: blockInfo.header.timestamp,
+        bits: blockInfo.header.nBits,
+        nonce: blockInfo.header.nonce,
+        parentId: blockInfo.header.parentId,  
+        txs: blockInfo.blockTransactions,
+        interlinks: blockInfo.header.interlinks
+    }
+
+    res.send(resBlockInfo);
 }
