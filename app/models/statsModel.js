@@ -9,8 +9,8 @@ exports.synch = async url => {
     });
 
     mongoClient.connect(url, async (err, db) => {
-        let miners = await db.collection('miners').find({height: 1});
-        
+        let miners = await db.collection('miners').find().sort({height: 1}).toArray();
+        console.log(miners);
         if (miners[miners.length-1].height != 0) {
             forSynch = nodeInfo.height - miners[miners.length-1].height;
             updateDB(forSynch, url)
