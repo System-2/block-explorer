@@ -1,7 +1,8 @@
-const express = require('express'),
-    bodyParser = require('body-parser'),
-    mongoose = require('mongoose'),
-    app = express();
+const express = require('express');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const app = express();
+const statModel = require('./app/models/statsModel');
 
 let login = require('./config').dbLogin,
     pass = require('./config').dbPass,
@@ -22,5 +23,10 @@ app.use(
 
 app.use('/api/v1/', require('./router'));
 app.listen(appPort);
+
+setTimeout(function rec(){
+    statModel.synch();
+    setTimeout(rec, 60000);
+});
 
 console.log(`Server started on ${appPort}`);

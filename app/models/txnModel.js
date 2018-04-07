@@ -24,7 +24,6 @@ exports.getTxns = async (limit, page, long) => {
                         tx.block = headers[i]; 
                     });                
                     resolve(result);
-                    
                 });  
         });
     }
