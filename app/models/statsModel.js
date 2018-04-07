@@ -1,6 +1,7 @@
 const mongoClient = require('mongodb').MongoClient;
 const request = require('request-promise');
 const node = require('./../../config').node;
+const blockModel = require('./../models/blockModel');
 
 exports.synch = async url => {
     let nodeInfo = await request({
@@ -8,7 +9,8 @@ exports.synch = async url => {
         json: true
     });
 
-    mongoClient.connect(url, async (err, db) => {
+    mongoClient.connect(url, async (err, client) => {
+        console.log(db);
         let blocks = await db.collection('blocks').find().sort({height: 1}).toArray();
 
         if (blocks[blocks.length-1].height != 0) {
@@ -31,16 +33,16 @@ async function updateDB(forSynch, url){
     });
 }
 
-exports.getAllHeaders = async (url) => {
+exports.getAllHeaders = async (url, dbName) => {
     let nodeInfo = await request({
             url: `${node}/info`,
             json: true
         }),
-        promisess = [],
-        blocks = [];
+        promises = [],
+        blocksObj = [];
 
-    for(let i=0, j=0; i<nodeInfo.headersHeight; i+=100, j++){
-        promisess[j] = new Promise((resolve, reject) => {
+    for(let i=0, j=0; i<500; i+=100, j++){
+        promises[j] = new Promise((resolve, reject) => {
             resolve(
                 request({
                     url: `${node}/blocks?limit=100&offset=${i}`,
@@ -50,38 +52,55 @@ exports.getAllHeaders = async (url) => {
         });
     }
 
-    Promise.all(promisess).then( result => {
-        for(let i=0; i<result.length; i++){
-            blocks = blocks.concat(i);
-        }
+    Promise.all(promises).then( result => {
+        let blocks = [].concat.apply([], result);
 
-        mongoClient.connect(url, (err, db) => {
-            db.collection('headers').insert(blocks);
+        mongoClient.connect(url, async (err, db) => {
+            db = db.db(dbName);
+            console.log(blocks);
+
+            let blockInfoProm = [],
+                i = 0,
+                timeout = 0;
+            blocks.forEach(async block => {
+                setTimeout(async () => {
+                    const blockInfo = await blockModel.getBlockInfo(block);
+                    console.log(blockInfo);
+                    await db.collection('blocks').insertOne(blockInfo);
+                }, timeout);
+                timeout += 100;
+            });
         });
     });
 }
 
-exports.getAllBlocks = async (url) => {
+exports.getAllBlocks = async (url, dbName) => {
     let headers,
-        promisess = [];
-    mongoClient.connect(url, async (err, db) => {
-        headers = await db.collection('headers').findOne()     
-    });
+        promises = [];
 
-    for (let i=0; i<headers; i++){
-        promisess[i] = new Promise((resolve, reject) => {
-            resolve(
-                request({
-                    url: `${node}/blocks/${item}`,
-                    json: true
-                })
-            )
-        });
-    }
+    mongoClient.connect(url, async (err, client) => {
+        const db = client.db(dbName);
 
-    Promise.all(promisess).then( blocks => {
-        mongoClient.connect(url, (err, db) => {
-            db.collection('blocks').insert(blocks);
+        headers = (await db.collection('headers').findOne()).blocks;
+
+        for (let i = 0; i < headers.length; i++){
+            promises[i] = new Promise((resolve, reject) => {
+                resolve(
+                    request({
+                        uri: `${node}/blocks/${headers[i]}`,
+                        json: true
+                    })
+                )
+            });
+        }
+
+        Promise.all(promises).then( blocks => {
+            console.log(blocks);
+            mongoClient.connect(url, async (err, client) => {
+                const db = client.db(dbName);
+                console.log(blocks);
+                await db.collection('blocks').insertOne(blocks);
+            });
         });
     });
 }

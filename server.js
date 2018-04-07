@@ -10,11 +10,11 @@ let login = require('./config').dbLogin,
     dbName = require('./config').dbName,
     dbPort = require('./config').dbPort,
     appPort = require('./config.js').port,
-    prodaction = require('./config').prodaction,
-    url = `mongodb://${address}:${dbPort}/${dbName}`;
+    production = require('./config').production,
+    url = `mongodb://${address}:${dbPort}`;
 
 mongoose.Promise = global.Promise;
-mongoose.connect(url, {useMongoClient: true});
+// mongoose.connect(url, {useMongoClient: true});
 module.exports.mongoose = mongoose;
 
 app.use(
@@ -26,15 +26,15 @@ app.use('/api/v1/', require('./router'));
 app.listen(appPort);
 
 (async() => {
-    if (prodaction) {
+    if (production) {
         setTimeout(function rec(){
             statModel.synch(url);
             setTimeout(rec, 60000);
         });
     }
     else {
-        await statModel.getAllHeaders(url);
-        await statModel.getAllBlocks(url);
+        await statModel.getAllHeaders(url, dbName);
+        // await statModel.getAllBlocks(url, dbName);
     }
 })();
 
