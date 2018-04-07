@@ -9,7 +9,8 @@ let login = require('./config').dbLogin,
     address = require('./config').dbAddress,
     dbName = require('./config').dbName,
     dbPort = require('./config').dbPort,
-    appPort = require('./config.js').port
+    appPort = require('./config.js').port,
+    prodaction = require('./config').prodaction,
     url = `mongodb://${address}:${dbPort}/${dbName}`;
 
 mongoose.Promise = global.Promise;
@@ -24,9 +25,17 @@ app.use(
 app.use('/api/v1/', require('./router'));
 app.listen(appPort);
 
-setTimeout(function rec(){
-    statModel.synch(url);
-    setTimeout(rec, 60000);
-});
+(async() => {
+    if (prodaction) {
+        setTimeout(function rec(){
+            statModel.synch(url);
+            setTimeout(rec, 60000);
+        });
+    }
+    else {
+        await statModel.getAllHeaders(url);
+        await statModel.getAllBlocks(url);
+    }
+})();
 
 console.log(`Server started on ${appPort}`);
