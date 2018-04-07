@@ -45,7 +45,24 @@ exports.getTxns = async (limit, page, long) => {
 }
 
 exports.getTxn = async (id, blockId) => {    
-    let blockTrans = await request(`/blocks/${blockId}/transactions`),
-        result = blockTrans.find( block => block.id == id);
+    let blockTrans = await request(`${node}/blocks/${blockId}/transactions`),
+        result;
+
+    blockTrans = JSON.parse(blockTrans);
+
+    for (let i=0; i<blockTrans.length; i++){
+        if (blockTrans[i].id == id) {
+            result = {
+                from: blockTrans[i].inputs[0].id,
+                to: blockTrans[i].outputs[0].id,
+                nonce: blockTrans[i].inputs[0].nonce,
+                signture: blockTrans[i].inputs[0].signture,
+                value: blockTrans[i].outputs[0].value,
+                blockHash: blockId,
+                script: blockTrans[i].outputs[0].script
+            }
+            break;
+        }
+    }
     return result;
 }

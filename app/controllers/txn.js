@@ -13,5 +13,5 @@ exports.getTxn = async (req, res) => {
         blockId = req.params.blockId,
         response = await txnModel.getTxn(id, blockId);
 
-    res.json(JSON.parse(response));
+    res.json(response);
 }
