@@ -27,7 +27,7 @@ nunjucks.configure(__dirname + '/src/view', {
     express: app
 });
 
-app.use('/', require('./router'));
+app.use('/api/v1', require('./router'));
 app.listen(appPort);
 
 console.log(`Server started on ${appPort}`);
