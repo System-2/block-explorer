@@ -1,5 +1,4 @@
 const express = require('express'),
-    nunjucks = require('nunjucks'),
     bodyParser = require('body-parser'),
     mongoose = require('mongoose'),
     app = express();
@@ -21,13 +20,7 @@ app.use(
     bodyParser()
 );
 
-nunjucks.configure(__dirname + '/src/view', {
-    autoescape: true,
-    cache: false,
-    express: app
-});
-
-app.use('/', require('./router'));
+app.use('/api/v1/', require('./router'));
 app.listen(appPort);
 
 console.log(`Server started on ${appPort}`);
