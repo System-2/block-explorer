@@ -1,0 +1,21 @@
+{
+  "name": "bch_explorer",
+  "version": "1.0.0",
+  "description": "blockchain explorer ErgoPlatform",
+  "scripts": {
+    "start": "npm i && nodemon server.js"
+  },
+  "keywords": [],
+  "author": "VKapicyn && jaizzer && warlock1607",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "connect-mongo": "^2.0.0",
+    "express": "^4.14.0",
+    "mongoose": "^4.13.2",
+    "nodemon": "^1.11.0",
+    "nunjucks": "^3.0.1",
+    "request": "^2.85.0",
+    "request-promise": "^4.2.2"
+  }
+}
