@@ -1,6 +1,6 @@
 const dir = __dirname;
 
 module.exports = {
-    // info: require(`${dir}/info`),
-    block: require(`${dir}/block`)
+    block: require(`${dir}/block`),
+    txn: require(`${dir}/txn`)
 };
