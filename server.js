@@ -14,8 +14,8 @@ let login = require('./config').dbLogin,
     url = `mongodb://${address}:${dbPort}`;
 
 mongoose.Promise = global.Promise;
-// mongoose.connect(url, {useMongoClient: true});
 module.exports.mongoose = mongoose;
+module.exports.config = {url, dbName}
 
 app.use(
     express.static(__dirname + '/src'),
@@ -33,8 +33,8 @@ app.listen(appPort);
         });
     }
     else {
-        await statModel.getAllHeaders(url, dbName);
-        // await statModel.getAllBlocks(url, dbName);
+        //await statModel.getAllHeaders(url, dbName);
+        //await statModel.getAllBlocks(url, dbName);
     }
 })();
 

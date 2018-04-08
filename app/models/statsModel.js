@@ -10,7 +10,6 @@ exports.synch = async url => {
     });
 
     mongoClient.connect(url, async (err, client) => {
-        console.log(db);
         let blocks = await db.collection('blocks').find().sort({height: 1}).toArray();
 
         if (blocks[blocks.length-1].height != 0) {
@@ -57,7 +56,6 @@ exports.getAllHeaders = async (url, dbName) => {
 
         mongoClient.connect(url, async (err, db) => {
             db = db.db(dbName);
-            console.log(blocks);
 
             let blockInfoProm = [],
                 i = 0,
@@ -65,7 +63,6 @@ exports.getAllHeaders = async (url, dbName) => {
             blocks.forEach(async block => {
                 setTimeout(async () => {
                     const blockInfo = await blockModel.getBlockInfo(block);
-                    console.log(blockInfo);
                     await db.collection('blocks').insertOne(blockInfo);
                 }, timeout);
                 timeout += 100;
@@ -95,12 +92,49 @@ exports.getAllBlocks = async (url, dbName) => {
         }
 
         Promise.all(promises).then( blocks => {
-            console.log(blocks);
             mongoClient.connect(url, async (err, client) => {
                 const db = client.db(dbName);
-                console.log(blocks);
                 await db.collection('blocks').insertOne(blocks);
             });
+        });
+    });
+}
+
+exports.transOnBlocks = async (limit, url, dbName) => {
+    return new Promise ((res, rej) => {
+            mongoClient.connect(url, async (err, client) => {
+            const db = client.db(dbName);
+
+            let blocks = await db.collection('blocks').find().sort({_id: -1}).limit(Number(limit)).toArray(),
+                stat = [];
+            blocks.map( block => {
+                let isNone = true;
+                for (i=0; i<stat.length; i++){
+                    if (stat[i]['items'] == block.blockTransactions.transactions.length){
+                        ++stat[i]['count'];
+                        isNone = false;
+                        break;
+                    }
+                }
+                if (isNone) {
+                    stat[stat.length] = {
+                        items: block.blockTransactions.transactions.length,
+                        count: 1
+                    }
+                }  
+            });
+            stat.sort((a,b) => {
+                return b.items - a.items
+            })
+            for (i=stat.length-1; i>0; i--){
+                for(j = (stat[i-1].items-1); (stat[i-1].items-1)!=stat[i].items; --j, i++){
+                    stat.splice(i,0, {
+                        items: j,
+                        count: 0
+                    });
+                }
+            }
+            res(stat);
         });
     });
 }
