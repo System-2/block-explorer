@@ -9,5 +9,7 @@ router.get('/txns/:limit/:page', controllers.txn.getLimitTxns);
 router.get('/txn/:blockId/:id', controllers.txn.getTxn);
 router.get('/stat/txns/:limit', controllers.chart.tranasctionsInfo);
 router.get('/stat/difficulty/:limit', controllers.chart.getDiffStats);
+router.post('/search', controllers.search);
+
 
 module.exports = router;
