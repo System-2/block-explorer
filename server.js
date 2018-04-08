@@ -12,7 +12,7 @@ let login = require('./config').dbLogin,
     production = require('./config').production,
     url = `mongodb://${address}:${dbPort}`;
 
-exports.url = url;
+module.exports.config = {url, dbName}
 
 app.use(
     express.static(__dirname + '/src'),
