@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 const statModel = require('./app/models/statsModel');
+const nunjucks = require('nunjucks');
 
 let login = require('./config').dbLogin,
     pass = require('./config').dbPass,
@@ -13,6 +14,12 @@ let login = require('./config').dbLogin,
     url = `mongodb://${address}:${dbPort}`;
 
 module.exports.config = {url, dbName}
+
+nunjucks.configure(__dirname + '/src/view', {
+    autoescape: true,
+    cache: false,
+    express: app
+});
 
 app.use(
     express.static(__dirname + '/src'),

@@ -13,3 +13,7 @@ exports.tranasctionsInfo = async (req, res) => {
         response = await statsModel.transOnBlocks(limit, config.url, config.dbName);
     res.json(response);
 }
+
+exports.txnChart = (req, res) =>{
+    res.render('chart.html');
+}

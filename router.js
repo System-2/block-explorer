@@ -11,5 +11,9 @@ router.get('/stat/txns/:limit', controllers.chart.tranasctionsInfo);
 router.get('/stat/difficulty/:limit', controllers.chart.getDiffStats);
 router.post('/search', controllers.search);
 
+router.get('/view/txns/:page', controllers.txn.getAllView);
+router.get('/view/txn/:id/:block', controllers.txn.getView);
+router.get('/chart1', controllers.chart.txnChart);
+
 
 module.exports = router;
