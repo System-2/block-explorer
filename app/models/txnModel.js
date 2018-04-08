@@ -55,10 +55,10 @@ exports.getTxn = async (id, blockId) => {
                 from: blockTrans[i].inputs[0].id,
                 to: blockTrans[i].outputs[0].id,
                 nonce: blockTrans[i].inputs[0].nonce,
-                signture: blockTrans[i].inputs[0].signture,
+                signture: '',
                 value: blockTrans[i].outputs[0].value,
                 blockHash: blockId,
-                script: blockTrans[i].outputs[0].script
+                script: ''
             }
             break;
         }

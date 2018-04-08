@@ -41,3 +41,24 @@ exports.getBlockTXs = async headerId => {
 
     return blockTXs;
 }
+
+exports.getBlockByHeight = async height => {
+    let reqUri = `${url}/blocks/at/${height}`;
+
+    let blockId = (await request({
+        uri: reqUri,
+        json: true
+    }))[0];
+
+    reqUri = `${url}/blocks/${blockId}`;
+    let block = new Promise((resolve, reject) => {
+        resolve(
+            request({
+                uri: reqUri,
+                json: true
+            })
+        )
+    });
+
+    return block;
+}

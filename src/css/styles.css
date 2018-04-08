@@ -1,0 +1,7 @@
+.table thead {
+    background-color: #f9f9f9;
+}
+
+.table tbody tr:nth-of-type(even) {
+    background-color: #f9f9f9;
+}

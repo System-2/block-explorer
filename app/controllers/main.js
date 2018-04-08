@@ -1,10 +1,9 @@
 const blockModel = require('./../models/blockModel');
 const infoModel = require('./../models/infoModel');
-const helpModel = require('./../models/helpModel');
 
-exports.getBlocks = async (req, res) => {
+exports.getMainPage = async (req, res) => {
     const blocks = await blockModel.getBlocks(
-        req.params.count
+        30
     );
     
     let resBlocks = [],
@@ -29,30 +28,9 @@ exports.getBlocks = async (req, res) => {
                 }
             });
 
-            res.send(resBlocks);
+            res.render('index.html', {
+                blocks: resBlocks.reverse()
+            });
         }
-    });
-}
-
-exports.getBlock = async (req, res) => {
-    const blockInfo = await blockModel.getBlockInfo(
-        req.params.headerId
-    );
-
-    const resBlockInfo = helpModel.formBlockData(blockInfo);
-
-    res.send(resBlockInfo);
-}
-
-exports.getBlockInfoPage = async (req, res) => {
-    const blockInfo = await blockModel.getBlockInfo(
-        req.params.id
-    );
-
-    let resBlockInfo = helpModel.formBlockData(blockInfo);
-    resBlockInfo.time = new Date(resBlockInfo.time);
-    
-    res.render('block.html', {
-        block: resBlockInfo
     });
 }

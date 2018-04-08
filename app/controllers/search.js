@@ -4,24 +4,20 @@ const helpModel = require('./../models/helpModel');
 
 exports.search = async (req, res) => {
     const hash = req.body.hash;
-
     let response;
-    switch (hash.length) {
-        case 43:
-            try {
-                response = helpModel.formBlockData(await blockModel.getBlockInfo(hash));
-            } catch (e) {
-                res.send('Block not found.');
 
-                return;
-            }
-
-            break;
-
-        case 44:
-            response = 'transaction info...';
-
-            break;
+    try {
+        if (Number(hash) != NaN) {
+            response = helpModel.formBlockData(
+                await blockModel.getBlockByHeight(hash)
+            );
+        } else {
+            response = helpModel.formBlockData(
+                await blockModel.getBlockInfo(hash)
+            );
+        }
+    } catch (e) {
+        response = 'Block not found.';
     }
 
     res.send(response);
