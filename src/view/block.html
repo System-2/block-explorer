@@ -1,0 +1,29 @@
+{% include "templates/header.html" %}
+<div class="container">
+    <div class="row">
+        <h3>Блок <span class="text-muted">#{{block.height}}</span></h3>
+    </div>
+    <div class="row">
+        <div class="container wrapper border border-primary">
+            <p><strong>Высота</strong>: {{block.height}}</p>
+            <p><strong>Хэш</strong>: <a href="/blocks/{{block.id}}">{{block.id}}</a></p>
+            <p><strong>Родитель</strong>: <a href="/blocks/{{block.parentId}}">{{block.parentId}}</a></p>
+            <p><strong>Сложность</strong>: {{block.difficulty}}</p>
+            <p><strong>Время получения</strong>: {{block.time}}</p>
+            <p><strong>Nonce</strong>: {{block.nonce}}</p>
+            <p><strong>Биты</strong>: {{block.bits}}</p>
+            <p><strong>Транзакции</strong>: 
+                {% for tx in block.txs.transactions %}
+                <ul>
+                    <li>
+                        <p><strong>Хэш</strong>: {{tx.id}}</p>
+                        <p><strong>От</strong>: {{tx.inputs[0].id}}</p>
+                        <p><strong>Кому</strong>: {{tx.outputs[0].id}}</p>
+                    </li>
+                </ul>
+                {% endfor %}
+            </p>
+        </div>
+    </div>
+</div>
+{% include "templates/footer.html" %}

@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const nunjucks = require('nunjucks');
 const app = express();
 const statModel = require('./app/models/statsModel');
 
@@ -19,7 +20,15 @@ app.use(
     bodyParser()
 );
 
-app.use('/api/v1/', require('./router'));
+nunjucks.configure(__dirname + '/src/view', {
+    autoescape: true,
+    cache: false,
+    express: app
+});
+
+app.use('/', require('./mainRouter'))
+app.use('/api/v1/', require('./apiRouter'));
+
 app.listen(appPort);
 
 (async() => {
