@@ -1,0 +1,59 @@
+{% include "templates/header.html" %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                    <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+            </div>
+        </div>
+    </div>
+<script>
+
+$.get("/api/v1/stat/txns/400", function( JSONdata ) {
+    Highcharts.chart('container', {
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: 'Количество блоков в транзакции'
+    },
+    subtitle: {
+        text: ''
+    },
+    xAxis: {
+        type: 'category'
+    },
+    yAxis: {
+        title: {
+            text: 'Количество блоков с таким число транзакций'
+        }
+
+    },
+    legend: {
+        enabled: false
+    },
+    plotOptions: {
+        series: {
+            borderWidth: 0,
+            dataLabels: {
+                enabled: true,
+                format: '{point.y}'
+            }
+        }
+    },
+
+    tooltip: {
+        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+    },
+
+    "series": [
+        {
+            "name": "Browsers",
+            "colorByPoint": true,
+            "data": JSONdata
+        }
+    ]
+});
+});
+</script>
+{% include "templates/footer.html" %}

@@ -15,6 +15,12 @@ let login = require('./config').dbLogin,
 
 module.exports.config = {url, dbName}
 
+nunjucks.configure(__dirname + '/src/view', {
+    autoescape: true,
+    cache: false,
+    express: app
+});
+
 app.use(
     express.static(__dirname + '/src'),
     bodyParser()
