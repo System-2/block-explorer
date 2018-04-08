@@ -8,4 +8,6 @@ router.get('/blocks/:headerId', controllers.block.getBlock);
 router.get('/txns/:limit/:page', controllers.txn.getLimitTxns);
 router.get('/txn/:blockId/:id', controllers.txn.getTxn);
 
+router.get('/stats/difficulty/:limit', controllers.chart.getDiffStats);
+
 module.exports = router;
