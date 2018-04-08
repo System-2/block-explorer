@@ -129,27 +129,27 @@ exports.transOnBlocks = async (limit, url, dbName) => {
             blocks.map( block => {
                 let isNone = true;
                 for (i=0; i<stat.length; i++){
-                    if (stat[i]['items'] == block.blockTransactions.transactions.length){
-                        ++stat[i]['count'];
+                    if (stat[i]['name'] == block.blockTransactions.transactions.length){
+                        ++stat[i]['y'];
                         isNone = false;
                         break;
                     }
                 }
                 if (isNone) {
                     stat[stat.length] = {
-                        items: block.blockTransactions.transactions.length,
-                        count: 1
+                        name: block.blockTransactions.transactions.length,
+                        y: 1
                     }
                 }  
             });
             stat.sort((a,b) => {
-                return b.items - a.items
+                return b.name - a.name
             })
             for (i=stat.length-1; i>0; i--){
-                for(j = (stat[i-1].items-1); (stat[i-1].items-1)!=stat[i].items; --j, i++){
+                for(j = (stat[i-1].name-1); (stat[i-1].name-1)!=stat[i].name; --j, i++){
                     stat.splice(i,0, {
-                        items: j,
-                        count: 0
+                        name: j,
+                        y: 0
                     });
                 }
             }
